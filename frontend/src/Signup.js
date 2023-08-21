@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import validation from "./SignupValidation";
+import axios from "axios";
 
 function Signup() {
   const [values, setValues] = useState({
@@ -9,6 +10,8 @@ function Signup() {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState({});
 
@@ -22,6 +25,17 @@ function Signup() {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(validation(values));
+    if (
+      errors.firstName === "" &&
+      errors.lastName === "" &&
+      errors.email === "" &&
+      errors.password === ""
+    ) {
+      axios
+        .post("http://localhost:8081/signup", values)
+        .then((res) => navigate("/"))
+        .catch((err) => console.log(err));
+    }
   };
 
   return (
